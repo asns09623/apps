@@ -1,0 +1,3 @@
+kubectl get ns
+kubectl get clusterissuer
+kubectl get ingressclass

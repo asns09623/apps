@@ -1,0 +1,16 @@
+{{- range $i, $ns := .Values.namespaces }}
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ $ns.name }}
+  labels:
+    {{- include "platform.labels" $ | nindent 4 }}
+    {{- range $k, $v := ($ns.labels | default dict) }}
+    {{ $k }}: "{{ $v }}"
+    {{- end }}
+  annotations:
+    {{- range $k, $v := ($ns.annotations | default dict) }}
+    {{ $k }}: "{{ $v }}"
+    {{- end }}
+---
+{{- end }}

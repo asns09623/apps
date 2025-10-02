@@ -1,0 +1,39 @@
+{{- if .Values.issuers.enabled }}
+{{- $cfg := .Values.issuers.clusterIssuers }}
+
+{{- if $cfg.staging.enabled }}
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: {{ $cfg.staging.name }}
+  labels:
+    {{- include "platform.labels" . | nindent 4 }}
+spec:
+  acme:
+    email: {{ $cfg.staging.email }}
+    server: {{ $cfg.staging.server }}
+    privateKeySecretRef:
+      name: {{ $cfg.staging.privateKeySecretRef }}
+    solvers:
+      {{- toYaml $cfg.staging.solvers | nindent 6 }}
+---
+{{- end }}
+
+{{- if $cfg.production.enabled }}
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: {{ $cfg.production.name }}
+  labels:
+    {{- include "platform.labels" . | nindent 4 }}
+spec:
+  acme:
+    email: {{ $cfg.production.email }}
+    server: {{ $cfg.production.server }}
+    privateKeySecretRef:
+      name: {{ $cfg.production.privateKeySecretRef }}
+    solvers:
+      {{- toYaml $cfg.production.solvers | nindent 6 }}
+---
+{{- end }}
+{{- end }}

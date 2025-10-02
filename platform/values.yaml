@@ -1,0 +1,50 @@
+namespaces:
+  - name: retail-dev
+    labels: { env: dev }
+    annotations: {}
+    rbac:
+      create: true
+      roleRules: []
+      bindings: []
+    serviceAccounts: []
+
+defaultRole:
+  name: ns-default-reader
+  rules:
+    - apiGroups: [""]
+      resources: ["pods","services","configmaps","secrets","endpoints"]
+      verbs: ["get","list","watch"]
+    - apiGroups: ["apps"]
+      resources: ["deployments","statefulsets","daemonsets","replicasets"]
+      verbs: ["get","list","watch"]
+
+issuers:
+  enabled: true
+  clusterIssuers:
+    staging:
+      enabled: true
+      name: letsencrypt-staging
+      email: devops@example.com
+      server: https://acme-staging-v02.api.letsencrypt.org/directory
+      privateKeySecretRef: letsencrypt-staging-key
+      solvers:
+        - http01:
+            ingress:
+              class: nginx
+    production:
+      enabled: false
+      name: letsencrypt-prod
+      email: devops@example.com
+      server: https://acme-v02.api.letsencrypt.org/directory
+      privateKeySecretRef: letsencrypt-prod-key
+      solvers:
+        - http01:
+            ingress:
+              class: nginx
+
+ingress:
+  class:
+    enabled: true
+    name: nginx
+    controller: "k8s.io/ingress-nginx"
+    setAsDefault: true

@@ -1,0 +1,52 @@
+{{- range $i, $ns := .Values.namespaces }}
+{{- $roleName := (printf "%s-%s" $ns.name (default $.Values.defaultRole.name $.Values.defaultRole.name)) | trunc 63 | trimSuffix "-" -}}
+{{- $rules := $ns.rbac.roleRules | default $.Values.defaultRole.rules -}}
+{{- if $ns.rbac.create | default true }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ $roleName }}
+  namespace: {{ $ns.name }}
+  labels:
+    {{- include "platform.labels" $ | nindent 4 }}
+rules:
+  {{- toYaml $rules | nindent 2 }}
+---
+{{- range $j, $b := ($ns.rbac.bindings | default list) }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: {{ ternary "ClusterRoleBinding" "RoleBinding" (eq $b.roleKind "ClusterRole") }}
+metadata:
+  name: {{ printf "%s-%s" $ns.name $b.name | trunc 63 | trimSuffix "-" }}
+  labels:
+    {{- include "platform.labels" $ | nindent 4 }}
+{{- if eq $b.roleKind "ClusterRole" }}
+subjects:
+  - kind: {{ $b.kind }}
+    {{- if eq $b.kind "ServiceAccount" }}
+    name: {{ (splitList ":" $b.subject)._1 | default $b.subject }}
+    namespace: {{ (splitList ":" $b.subject)._0 | default $ns.name }}
+    {{- else }}
+    name: {{ $b.subject }}
+    {{- end }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ $b.roleName }}
+{{- else }}
+subjects:
+  - kind: {{ $b.kind }}
+    {{- if eq $b.kind "ServiceAccount" }}
+    name: {{ (splitList ":" $b.subject)._1 | default $b.subject }}
+    namespace: {{ (splitList ":" $b.subject)._0 | default $ns.name }}
+    {{- else }}
+    name: {{ $b.subject }}
+    {{- end }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ $roleName }}
+{{- end }}
+---
+{{- end }}
+{{- end }}
+{{- end }}
