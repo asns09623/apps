@@ -1,6 +1,7 @@
 {{- if .Values.ingress.class.enabled }}
 apiVersion: networking.k8s.io/v1
 kind: IngressClass
+namespace: ingress-nginx
 metadata:
   name: {{ .Values.ingress.class.name }}
   labels:
