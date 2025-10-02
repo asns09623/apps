@@ -9,39 +9,39 @@ metadata:
     alb.ingress.kubernetes.io/scheme: internet-facing  # ALB Scheme (internet-facing or internal)
     alb.ingress.kubernetes.io/target-type: ip         # Using IP mode (instead of instance mode)
 spec:
+  ingressClassName: alb
   rules:
-    - host: your-app.example.com  # Replace with your domain
-      http:
+    - http:
         paths:
-          - path: /cart(/|$)(.*)
+          - path: /cart
             pathType: Prefix
             backend:
               service:
                 name: retail-store-sample-cart-chart-carts
                 port:
                   number: 80
-          - path: /catalog(/|$)(.*)
+          - path: /catalog
             pathType: Prefix
             backend:
               service:
                 name: retail-store-sample-catalog-chart
                 port:
                   number: 80
-          - path: /orders(/|$)(.*)
+          - path: /orders
             pathType: Prefix
             backend:
               service:
                 name: retail-store-sample-orders-chart
                 port:
                   number: 80
-          - path: /checkout(/|$)(.*)
+          - path: /checkout
             pathType: Prefix
             backend:
               service:
                 name: retail-store-sample-checkout-chart
                 port:
                   number: 80
-          - path: /()(.*)
+          - path: /
             pathType: Prefix
             backend:
               service:
