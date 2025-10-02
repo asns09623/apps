@@ -1,0 +1,50 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Release.Name }}-ingress
+  labels:
+    app: {{ .Release.Name }}
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: your-app.example.com  # Replace with your domain
+      http:
+        paths:
+          - path: /cart(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: retail-store-sample-cart-chart-carts
+                port:
+                  number: 80
+          - path: /catalog(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: retail-store-sample-catalog-chart
+                port:
+                  number: 80
+          - path: /orders(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: retail-store-sample-orders-chart
+                port:
+                  number: 80
+          - path: /checkout(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: retail-store-sample-checkout-chart
+                port:
+                  number: 80
+          - path: /()(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: retail-store-sample-ui-chart
+                port:
+                  number: 80
+
