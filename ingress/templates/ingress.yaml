@@ -5,9 +5,10 @@ metadata:
   labels:
     app: {{ .Release.Name }}
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    # ALB annotations for AWS ALB Ingress Controller
+    alb.ingress.kubernetes.io/scheme: internet-facing  # ALB Scheme (internet-facing or internal)
+    alb.ingress.kubernetes.io/target-type: ip         # Using IP mode (instead of instance mode)
 spec:
-  ingressClassName: nginx
   rules:
     - host: your-app.example.com  # Replace with your domain
       http:
@@ -47,4 +48,3 @@ spec:
                 name: retail-store-sample-ui-chart
                 port:
                   number: 80
-
