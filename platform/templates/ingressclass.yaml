@@ -1,15 +1,15 @@
-{{- if .Values.ingress.class.enabled }}
-apiVersion: networking.k8s.io/v1
-kind: IngressClass
-namespace: ingress-nginx
-metadata:
-  name: {{ .Values.ingress.class.name }}
-  labels:
-    {{- include "platform.labels" . | nindent 4 }}
-  {{- if .Values.ingress.class.setAsDefault }}
-  annotations:
-    ingressclass.kubernetes.io/is-default-class: "true"
-  {{- end }}
-spec:
-  controller: {{ .Values.ingress.class.controller }}
-{{- end }}
+# {{- if .Values.ingress.class.enabled }}
+# apiVersion: networking.k8s.io/v1
+# kind: IngressClass
+# namespace: ingress-nginx
+# metadata:
+#   name: {{ .Values.ingress.class.name }}
+#   labels:
+#     {{- include "platform.labels" . | nindent 4 }}
+#   {{- if .Values.ingress.class.setAsDefault }}
+#   annotations:
+#     ingressclass.kubernetes.io/is-default-class: "true"
+#   {{- end }}
+# spec:
+#   controller: {{ .Values.ingress.class.controller }}
+# {{- end }}
